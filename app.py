@@ -66,15 +66,54 @@ def register_blueprint(app):
 
 def config_jwt(jwt):
     '''
-        配置jwt
+        配置jwt 回调函数
+        只是用装饰器的方式，配置默认函数
+        python的语法糖
+        def token_in_blacklist_loader(self, callback):
+            self._token_in_blacklist_callback = callback
+
+        h = token_in_blacklist_loader(h)
+
     :param jwt:
     :return:
     '''
+
     @jwt.token_in_blacklist_loader
     def token_in_blacklist_loader(decoded_jwt):
-        # identity =
-        #
-        pass
-    pass
+        '''
+        JWT_BLACKLIST_ENABLED为True 时，将调用这个回调函数
+        :param decoded_jwt:
+        :return:
+        '''
+        print('hhhhhhh')
 
+    @jwt.needs_fresh_token_loader
+    def h():
+        '''
+            create_access_token(identity='uu',fresh=True) 创建token 的fresh=False时
+            @fresh_jwt_required 保护的endpoint 时
+            调用这个回调函数
+        :return:
+        '''
+        from flask_jwt_extended import create_access_token,set_access_cookies
+        token = create_access_token(identity='uu',fresh=True)
+        resp = {"token":token}
+        from flask import jsonify
+        resp = jsonify(resp)
+        set_access_cookies(resp,encoded_access_token=token)
+        return resp,200
+
+    @jwt.expired_token_loader
+    def hh():
+        '''
+            token 过期时 调用这个回调函数
+        :return:
+        '''
+        from flask_jwt_extended import create_access_token, set_access_cookies
+        token = create_access_token(identity='uu', fresh=True)
+        resp = {"token": token}
+        from flask import jsonify
+        resp = jsonify(resp)
+        set_access_cookies(resp, encoded_access_token=token)
+        return resp, 200
 

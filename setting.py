@@ -25,7 +25,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{username}:{password}@{host}:{p
         port=env.str("DB_PORT"),
         db=env.str("DB_NAME")
     )
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
@@ -36,6 +36,7 @@ JWT_COOKIE_SAMESITE = 'Strict' # 严格禁止跨站传输，防止CSRF攻击（S
 JWT_COOKIE_CSRF_PROTECT = env.bool("JWT_COOKIE_CSRF_PROTECT") # 双重验证
 JWT_COOKIE_SECURE = env.bool("JWT_COOKIE_SECURE") # 只允许https传输cookie，生产环境最好设置为True（XSS攻击防护相关）！！！
 JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=env.int("JWT_ACCESS_TOKEN_EXPIRES_DAYS")) # 过期时间设置
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=40)
 JWT_BLACKLIST_ENABLED = env.bool("JWT_BLACKLIST_ENABLED")
 JWT_BLACKLIST_TOKEN_CHECKS = env.list("JWT_BLACKLIST_TOKEN_CHECKS")
 

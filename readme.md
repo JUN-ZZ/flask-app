@@ -24,3 +24,16 @@ git之后 直接 在根目录运行flask db upgrade 升级数据库会自动创�
 - setting.py app配置文件
 
 持续更新中...
+
+技术架构：flask + Sql数据库+JWT认证 (⊙﹏⊙) 非常普通，估计有机会在学把 后面应该转战Java (⊙﹏⊙)
+
+### 扩展模块：
+
+ - flask_marshmallow
+ - flask_jwt_extended
+ - flask_migrate
+ - flask_sqlalchemy
+ 
+ 
+ 
+ 

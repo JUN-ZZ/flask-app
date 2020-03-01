@@ -34,7 +34,7 @@ def register():
     pwd = json.get('pwd')
     pwd = generate_password_hash(pwd)
 
-    u = User.query.filter_by(username==username).first()
+    u = User.query.filter(User.username==username).first()
     if u is not None:
         return jsonify({'result':'该用户名已存在'}), 200
     uu = User(username=username,pwd=pwd)
@@ -42,8 +42,8 @@ def register():
     db.session.commit()
 
     # 创建token
-    token = create_access_token(identity=u.user_id)
-    refresh_token = create_refresh_token(identity=u.user_id)
+    token = create_access_token(identity=uu.user_id,fresh=True)
+    refresh_token = create_refresh_token(identity=uu.user_id)
 
     data = {
         "access_token": token,
@@ -60,8 +60,8 @@ def register():
     return resp, 200
 
 
-@main_bp.route('/login', methods=(['GET']))
-@fresh_jwt_required
+@main_bp.route('/login', methods=(['POST']))
+@jwt_required
 def login():
     # 这个是视图函数，就是相当于spring controller里面的方法
     # 不过这个要注册到app中
@@ -70,6 +70,8 @@ def login():
     username = json.get('username')
     pwd = json.get('pwd')
     pwd = generate_password_hash(pwd)
+    # pwd = check_password_hash(pwd,pwd)
+    print(pwd)
     # 从数据库中验证
     u = User.query.filter(User.username ==username,User.pwd==pwd).first()
     if u is None:
@@ -93,6 +95,15 @@ def login():
     set_refresh_cookies(response=resp,encoded_refresh_token=refresh_token)
 
     return resp, 200
+
+
+@main_bp.route('/get', methods=(['GET']))
+@fresh_jwt_required
+def get():
+
+    return jsonify({'message':'token过期，但是refresh token 没过期 '}),200
+
+
 
 
 @main_bp.route('/getUserByName', methods=(['POST']))
